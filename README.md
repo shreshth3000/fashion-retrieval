@@ -53,7 +53,7 @@ street-style photography, so check that office/home aren't badly underrepresente
 python -m src.retriever.query "a bright yellow raincoat" --k 5
 ```
 
-Or run `notebooks/eval.ipynb` to execute all 5 assignment queries and view top-k image grids.
+Or run `notebooks/eval.ipynb` / `scripts/evaluate.py` to execute all 5 assignment queries and view top-k image grids.
 
 ## Tests
 
