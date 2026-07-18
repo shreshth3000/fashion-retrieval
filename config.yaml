@@ -1,0 +1,92 @@
+# Central config. No model name / path / k / weight belongs in .py files — it belongs here.
+
+paths:
+  images_dir: "data/images"
+  metadata_jsonl: "data/metadata.jsonl"
+  chroma_dir: "data/chroma_store"
+  chroma_collection: "fashion_images"
+
+dataset:
+  hf_dataset_id: "detection-datasets/fashionpedia"
+  target_num_images: 1800
+  splits: ["train", "val"]
+  seed: 42
+
+models:
+  fashion_clip: "patrickjohncyh/fashion-clip"
+  detector: "valentinafeve/yolos-fashionpedia"   # verify exact repo id on HF before first run
+  detector_score_threshold: 0.5
+  reranker: "Salesforce/blip-itm-large-coco"
+  query_parser_llm: "gemini-2.5-flash"
+
+garment_types:
+  - shirt
+  - blouse
+  - t-shirt
+  - sweater
+  - cardigan
+  - jacket
+  - coat
+  - raincoat
+  - vest
+  - dress
+  - skirt
+  - pants
+  - shorts
+  - jumpsuit
+  - blazer
+  - hoodie
+  - tie
+  - scarf
+  - hat
+  - shoe
+  - bag
+
+color:
+  vocabulary:
+    - black
+    - white
+    - gray
+    - red
+    - orange
+    - yellow
+    - green
+    - blue
+    - purple
+    - pink
+    - brown
+    - beige
+    - navy
+    - maroon
+    - olive
+  kmeans_clusters: 3
+  lab_match_threshold: 22.0   # max CIE76 LAB distance to count as a color match
+
+scene:
+  labels:
+    - office interior
+    - urban street
+    - park
+    - home interior
+  prompt_template: "a photo of a person in {label}"
+
+formality:
+  labels:
+    - formal
+    - casual
+    - outerwear
+  prompt_template: "a photo of {label} clothing"
+
+retrieval:
+  stage1_top_n: 50
+  final_k: 5
+  weights:
+    stage1_similarity: 0.25
+    attribute_match: 0.25
+    scene_match: 0.15
+    rerank_score: 0.35
+
+query_parser:
+  use_llm: true
+  llm_temperature: 0.0
+  timeout_seconds: 15

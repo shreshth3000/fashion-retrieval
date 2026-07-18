@@ -1,0 +1,16 @@
+torch
+transformers
+datasets
+chromadb
+google-genai
+scikit-learn
+scikit-image
+opencv-python-headless
+pillow
+pyyaml
+numpy
+jupyter
+matplotlib
+pytest
+tqdm
+python-dotenv

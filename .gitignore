@@ -1,0 +1,10 @@
+.venv/
+.env
+data/images/
+data/chroma_store/
+data/metadata.jsonl
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+DELIVERABLE.md
