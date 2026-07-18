@@ -19,14 +19,28 @@ def run_query(text: str, k: int | None = None) -> list[dict]:
     query = parse_query(text)
     candidates = recall_candidates(text)
     survivors = apply_filter(candidates, query)
+
+    weights = None
     if not survivors:
         # Hard gate wiped the field (e.g. detector missed the garment) — fall back to
-        # Stage 1 recall alone rather than returning nothing.
+        # Stage 1 recall alone rather than returning nothing. attribute_match/scene_match
+        # are structurally 0 here (not "no match", just "not evaluated"), so redistribute
+        # their weight onto the two signals that are still meaningful instead of letting
+        # them silently deflate every fallback-path score.
         survivors = candidates
         for c in survivors:
             c["attribute_match"] = 0.0
             c["scene_match"] = 0.0
-    ranked = rerank_candidates(survivors, text)
+        base_weights = load_config()["retrieval"]["weights"]
+        live_total = base_weights["stage1_similarity"] + base_weights["rerank_score"]
+        weights = {
+            "stage1_similarity": base_weights["stage1_similarity"] / live_total,
+            "attribute_match": 0.0,
+            "scene_match": 0.0,
+            "rerank_score": base_weights["rerank_score"] / live_total,
+        }
+
+    ranked = rerank_candidates(survivors, text, weights=weights)
     return ranked[:k]
 
 

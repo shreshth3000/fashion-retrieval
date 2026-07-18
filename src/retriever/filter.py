@@ -2,13 +2,25 @@
 boost candidates whose scene/formality match. Cheap, and removes obvious false positives
 before the expensive reranker runs."""
 
+import re
+
 from src.common.schema import Query
 from src.indexer.color import color_matches
 
 
+def _type_matches(detector_label: str, garment_type: str) -> bool:
+    """Fuzzy match between the detector's raw category label (e.g. Fashionpedia's
+    "shirt, blouse") and the parser's controlled vocabulary term (e.g. "shirt"). An exact
+    equality check is too brittle — detector taxonomies rarely line up 1:1 with a hand-picked
+    query vocabulary (also handles cases like query "raincoat" vs. detector "coat")."""
+    label_words = [w for w in re.split(r"[,\s]+", detector_label.lower()) if w]
+    gt_words = [w for w in re.split(r"[,\s]+", garment_type.lower()) if w]
+    return any(gw in lw or lw in gw for gw in gt_words for lw in label_words)
+
+
 def _garment_satisfied(garments: list[dict], garment_type: str, color_label: str) -> bool:
     for g in garments:
-        if g["type"] != garment_type:
+        if not _type_matches(g["type"], garment_type):
             continue
         if not color_label:
             return True

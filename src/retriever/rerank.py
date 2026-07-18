@@ -19,11 +19,13 @@ def rerank_score(image_path: str, query_text: str) -> float:
     return outputs.itm_score.softmax(dim=-1)[0, 1].item()
 
 
-def rerank_candidates(candidates: list[dict], query_text: str) -> list[dict]:
+def rerank_candidates(
+    candidates: list[dict], query_text: str, weights: dict[str, float] | None = None
+) -> list[dict]:
     for c in candidates:
         c["rerank_score"] = rerank_score(c["image_path"], query_text)
 
-    weights = load_config()["retrieval"]["weights"]
+    weights = weights or load_config()["retrieval"]["weights"]
     for c in candidates:
         c["final_score"] = (
             weights["stage1_similarity"] * c["stage1_similarity"]
