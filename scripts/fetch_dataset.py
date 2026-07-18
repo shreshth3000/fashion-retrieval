@@ -7,7 +7,10 @@ Usage: python scripts/fetch_dataset.py
 
 import json
 import random
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from datasets import load_dataset
 
