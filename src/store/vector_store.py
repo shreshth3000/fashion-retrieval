@@ -5,12 +5,12 @@ import json
 
 import chromadb
 
-from src.common.config import load_config
+from src.common.config import load_config, resolve_path
 
 
 def get_collection():
     cfg = load_config()["paths"]
-    client = chromadb.PersistentClient(path=cfg["chroma_dir"])
+    client = chromadb.PersistentClient(path=str(resolve_path(cfg["chroma_dir"])))
     return client.get_or_create_collection(
         name=cfg["chroma_collection"], metadata={"hnsw:space": "cosine"}
     )

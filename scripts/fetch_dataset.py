@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from datasets import load_dataset
 
-from src.common.config import load_config
+from src.common.config import load_config, resolve_path
 
 
 def main() -> None:
@@ -22,9 +22,9 @@ def main() -> None:
     ds_cfg = cfg["dataset"]
     paths_cfg = cfg["paths"]
 
-    images_dir = Path(paths_cfg["images_dir"])
+    images_dir = resolve_path(paths_cfg["images_dir"])
     images_dir.mkdir(parents=True, exist_ok=True)
-    metadata_path = Path(paths_cfg["metadata_jsonl"])
+    metadata_path = resolve_path(paths_cfg["metadata_jsonl"])
 
     rng = random.Random(ds_cfg["seed"])
     target = ds_cfg["target_num_images"]

@@ -5,12 +5,11 @@ the Chroma index (embedding + flattened metadata)."""
 import argparse
 import json
 from collections import Counter
-from pathlib import Path
 
 from PIL import Image
 from tqdm import tqdm
 
-from src.common.config import load_config
+from src.common.config import load_config, resolve_path
 from src.indexer.attributes import classify_formality
 from src.indexer.color import dominant_color
 from src.indexer.detect import detect_garments
@@ -54,7 +53,7 @@ def main() -> None:
     args = parser.parse_args()
 
     cfg = load_config()["paths"]
-    images_dir = Path(cfg["images_dir"])
+    images_dir = resolve_path(cfg["images_dir"])
     image_paths = sorted(images_dir.glob("*.jpg")) + sorted(images_dir.glob("*.png"))
     if args.limit:
         image_paths = image_paths[: args.limit]
